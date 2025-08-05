@@ -11,6 +11,9 @@ from preprocessing.frame_normalizer import FrameNormalizer
 from notification.notifier_factory import NotifierFactory
 from utils.settings import load_settings
 from smoke.smoke_detector import SmokeDetector
+from motion.motion_detector import MotionDetector
+from collections import defaultdict, deque
+from datetime import datetime
 
 # Optional event recording modules (if implemented)
 event_recorder = None
@@ -107,41 +110,76 @@ def grab_video_sequence(stream_manager, camera_id, settings, video_array):
 
 
 def run_detection_loop(settings, cameras, stream_manager, notifier, frame_buffer, frame_normalizer):
-    """Main detection loop that processes frames from all cameras."""
+    """
+    Main detection loop that processes frames from all cameras
+    with monolithic motion gating and no redundant processing.
+    """
     logger = logging.getLogger("Main")
     logger.info("[DETECTION] Starting detection loop")
-    
+
+    # Motion detector instance (monolithic logic)
+    motion_detector = MotionDetector(settings)
+
+    # Smoke detector instance (operates directly on grayscale buffers)
+    smoke_detector = SmokeDetector(settings)
+
+    # Rolling grayscale buffers per camera (fixed maxlen = 11 for parity)
+    grayscale_buffers = defaultdict(lambda: deque(maxlen=11))
+
     try:
         while True:
             for camera in cameras:
                 if not camera.enabled:
                     continue
-                    
+
                 camera_id = str(camera.id)
                 logger.info(f"[CAM:{camera_id}] Starting processing cycle")
+
                 frame = stream_manager.get_frame(camera_id)
-                
-                if frame is not None:
-                    logger.info(f"[CAM:{camera_id}] Frame received | shape: {frame.shape}")
-                    # Process frame through frame normalizer
-                    smoke_detected, processed_frames = frame_normalizer.process_frame(
-                        camera_id, frame, camera
+                if frame is None:
+                    logger.warning(f"[CAM:{camera_id}] No frame received")
+                    continue
+
+                logger.info(f"[CAM:{camera_id}] Frame received | shape: {frame.shape}")
+
+                # Normalize frame and extract processed stages
+                smoke_detected, processed_frames = frame_normalizer.process_frame(
+                    camera_id, frame, camera
+                )
+
+                # Extract grayscale frame for motion/smoke detection
+                gray_frame = processed_frames.get("current_gray")
+                if gray_frame is None:
+                    logger.warning(f"[CAM:{camera_id}] No grayscale frame available")
+                    continue
+
+                # Add to buffer
+                grayscale_buffers[camera_id].append(gray_frame)
+
+                # === MOTION GATING (Monolithic parity) ===
+                if len(grayscale_buffers[camera_id]) >= 2:
+                    if motion_detector.detect_motion_monolithic(
+                        list(grayscale_buffers[camera_id])
+                    ):
+                        logger.info(f"[CAM:{camera_id}] Motion detected — skipping smoke detection")
+                        continue
+
+                # === SMOKE DETECTION ===
+                if len(grayscale_buffers[camera_id]) == 11:
+                    smoke_detected, _ = smoke_detector.check_video_for_smoke(
+                        list(grayscale_buffers[camera_id])
                     )
-                    
                     if smoke_detected:
                         logger.warning(f"[CAM:{camera_id}] SMOKE DETECTED!")
-                        # Send notification
                         if notifier:
                             notifier.send_notification(
                                 f"Smoke detected on camera {camera_id}",
                                 f"Smoke detected at {datetime.now()}"
                             )
-                else:
-                    logger.warning(f"[CAM:{camera_id}] No frame received")
-            
-            # Sleep after processing all cameras, not between each camera
+
+            # Sleep after processing all cameras
             time.sleep(settings.sleep_time)
-                
+
     except KeyboardInterrupt:
         logger.info("[DETECTION] Detection loop interrupted")
     except Exception as e:
