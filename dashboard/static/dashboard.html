@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Smoke Detective Brazil</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-logo">
+      <!-- Inline SVG flame icon -->
+      <svg width="40" height="40" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#ff5400" d="M32 2C24 18 12 26 12 38c0 11 10 14 20 14s20-3 20-14c0-12-12-20-20-36z"/>
+      </svg>
+      <span class="logo-text">Smoke Detective Brazil</span>
+    </div>
+  </nav>
+
+  <main>
+    <section id="landing" class="tab-content active">
+      <div class="dashboard-header">
+        <h1>Welcome to Smoke Detective Brazil</h1>
+        <p class="subtitle">Real-time smoke detection monitoring system</p>
+      </div>
+      <div class="metrics-cards">
+        <div class="card" id="card-cameras">
+          <div class="card-icon">📹</div>
+          <div class="card-content">
+            <div class="card-title">Cameras</div>
+            <div class="card-value">-- / --</div>
+          </div>
+        </div>
+        <div class="card" id="card-streaming">
+          <div class="card-icon">🔴</div>
+          <div class="card-content">
+            <div class="card-title">Streaming</div>
+            <div class="card-value">--</div>
+          </div>
+        </div>
+        <div class="card" id="card-buffer">
+          <div class="card-icon">💾</div>
+          <div class="card-content">
+            <div class="card-title">Frame Buffer</div>
+            <div class="card-value">--</div>
+          </div>
+        </div>
+        <div class="card" id="card-health">
+          <div class="card-icon">❤️</div>
+          <div class="card-content">
+            <div class="card-title">System Health</div>
+            <div class="card-value">--</div>
+          </div>
+        </div>
+        <div class="card" id="card-cpu">
+          <div class="card-icon">⚡</div>
+          <div class="card-content">
+            <div class="card-title">CPU</div>
+            <div class="card-value">--%</div>
+          </div>
+        </div>
+        <div class="card" id="card-ram">
+          <div class="card-icon">🧠</div>
+          <div class="card-content">
+            <div class="card-title">RAM</div>
+            <div class="card-value">--%</div>
+          </div>
+        </div>
+        <div class="card" id="card-uptime">
+          <div class="card-icon">⏱️</div>
+          <div class="card-content">
+            <div class="card-title">Uptime</div>
+            <div class="card-value">--</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="liveview" class="tab-content">
+      <div class="camera-selector" id="camera-selector"></div>
+      <div class="feeds-grid" id="feeds-grid">
+        <!-- Video feeds inserted here dynamically -->
+      </div>
+    </section>
+
+    <section id="system-settings" class="tab-content">
+      <div class="settings-container">
+        <h2>System Configuration</h2>
+        <form id="settings-form">
+          <div class="form-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="detectionEnabled" />
+              <span class="checkmark"></span>
+              Detection Enabled
+            </label>
+          </div>
+          
+          <div class="form-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="schedulerEnabled" />
+              <span class="checkmark"></span>
+              Scheduler Enabled
+            </label>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="detectionStart">Detection Start Time</label>
+              <input type="time" id="detectionStart" />
+            </div>
+            <div class="form-group">
+              <label for="detectionEnd">Detection End Time</label>
+              <input type="time" id="detectionEnd" />
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="sensitivity">Sensitivity</label>
+              <input type="range" id="sensitivity" min="1" max="100" step="1" />
+              <span class="range-value" id="sensitivity-value">50</span>
+            </div>
+            <div class="form-group">
+              <label for="motionThreshold">Motion Threshold</label>
+              <input type="range" id="motionThreshold" min="0.01" max="1.0" step="0.01" />
+              <span class="range-value" id="motionThreshold-value">0.35</span>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="fps">Frames Per Second</label>
+            <input type="number" step="0.1" id="fps" min="0.1" max="30" />
+          </div>
+          
+          <button type="submit" class="save-btn">
+            <span class="btn-icon">💾</span>
+            Save Settings
+          </button>
+        </form>
+        <div id="settings-status" class="status-message"></div>
+      </div>
+    </section>
+
+    <section id="camera-settings" class="tab-content">
+      <div class="camera-settings-container">
+        <div class="camera-header">
+          <h2>Camera Management</h2>
+          <button id="btn-add-camera" class="add-camera-btn">
+            <span class="btn-icon">➕</span>
+            Add New Camera
+          </button>
+        </div>
+        
+        <div class="table-container">
+          <table id="cameras-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>IP Address</th>
+                <th>Status</th>
+                <th>FPS</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Cameras listed here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="logs" class="tab-content">
+      <div class="logs-container">
+        <div class="logs-header">
+          <h2>System Logs</h2>
+          <div class="logs-controls">
+            <div class="filter-group">
+              <label for="log-filter">Filter:</label>
+              <select id="log-filter">
+                <option value="uptime">Last 1 hour</option>
+                <option value="all">All logs</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="log-group">Group by:</label>
+              <select id="log-group">
+                <option value="none">No grouping</option>
+                <option value="camera">By Camera</option>
+                <option value="type">By Type</option>
+              </select>
+            </div>
+            <button id="btn-refresh-logs" class="refresh-btn">
+              <span class="btn-icon">🔄</span>
+              Refresh
+            </button>
+          </div>
+        </div>
+        <div class="logs-content">
+          <ul id="logs-list"></ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <ul class="tabs">
+      <li data-tab="landing" class="active">Dashboard</li>
+      <li data-tab="liveview">Live View</li>
+      <li data-tab="system-settings">System Settings</li>
+      <li data-tab="camera-settings">Camera Settings</li>
+      <li data-tab="logs">Logs</li>
+    </ul>
+  </footer>
+
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

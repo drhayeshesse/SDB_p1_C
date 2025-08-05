@@ -1,0 +1,26 @@
+# Use Python 3.11 slim base image
+FROM python:3.11-slim
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1     PIP_NO_CACHE_DIR=1     DEBIAN_FRONTEND=noninteractive
+
+# Install system dependencies for GStreamer, OpenCV, and other tools
+RUN apt-get update && apt-get install -y --no-install-recommends     gstreamer1.0-tools     gstreamer1.0-plugins-base     gstreamer1.0-plugins-good     gstreamer1.0-plugins-bad     gstreamer1.0-plugins-ugly     gstreamer1.0-libav     libgstreamer1.0-dev     libgstreamer-plugins-base1.0-dev     libcairo2-dev     pkg-config     python3-dev     libjpeg-dev     libpng-dev     libavcodec-dev     libavformat-dev     libswscale-dev     libx264-dev     libx265-dev     libv4l-dev     libatlas-base-dev     liblapack-dev     libopenblas-dev     libssl-dev     libffi-dev     git     curl     && rm -rf /var/lib/apt/lists/*
+
+# Create app directory
+WORKDIR /app
+
+# Copy requirements
+COPY requirements-all_modular_system.txt /app/requirements.txt
+
+# Install Python dependencies
+RUN pip install --upgrade pip && pip install -r requirements.txt
+
+# Copy application code
+COPY . /app
+
+# Expose Flask/FastAPI port
+EXPOSE 5000
+
+# Default command (can be overridden)
+CMD ["python", "main.py"]

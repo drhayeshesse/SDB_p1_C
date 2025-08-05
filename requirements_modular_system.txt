@@ -1,0 +1,38 @@
+# Core dependencies (from monolithic, still needed)
+numpy==2.0.2
+opencv-python==4.11.0.86
+scipy==1.13.1
+pillow==11.2.1
+matplotlib==3.9.4
+requests==2.32.3
+python-dateutil==2.9.0.post0
+packaging==25.0
+
+# Indirect/core Python utilities (installed automatically but version-pinned for stability)
+idna==3.10
+urllib3==2.4.0
+certifi==2025.4.26
+charset-normalizer==3.4.2
+six==1.17.0
+zipp==3.21.0
+importlib_metadata==8.7.0
+importlib_resources==6.5.2
+more-itertools==10.7.0
+
+# New dependencies for modular/optimized system
+Flask==3.0.3             # API and dashboard (can be swapped with FastAPI if needed)
+flask-socketio==5.3.6    # WebSocket streaming for snapshots
+eventlet==0.36.1         # Async support for Flask-SocketIO
+firebase-admin==6.6.0    # Push notifications to mobile apps
+twilio==9.3.0            # Phone call alerts
+boto3==1.35.28           # AWS S3/MinIO client for cloud storage
+minio==7.2.8             # MinIO S3-compatible storage client
+influxdb-client==1.44.0  # Historical metrics storage
+psutil==6.0.0            # System metrics collection
+numba==0.60.0            # Performance optimization
+
+# GStreamer bindings
+PyGObject==3.50.0
+
+# Optional for development/debugging
+ipython==8.26.0

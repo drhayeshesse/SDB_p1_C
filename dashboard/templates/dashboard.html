@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Smoke Detective Brazil</title>
+  <link rel="stylesheet" href="/static/css/styles.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-logo">
+      <!-- Inline SVG flame icon -->
+      <svg width="40" height="40" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#ff5400" d="M32 2C24 18 12 26 12 38c0 11 10 14 20 14s20-3 20-14c0-12-12-20-20-36z"/>
+      </svg>
+      <span class="logo-text">Smoke Detective Brazil</span>
+    </div>
+  </nav>
+
+  <main>
+    <section id="landing" class="tab-content active">
+      <h1>Welcome to Smoke Detective Brazil</h1>
+      <div class="metrics-cards">
+        <div class="card" id="card-cameras">Cameras Connected: -- / --</div>
+        <div class="card" id="card-streaming">Streaming Status: --</div>
+        <div class="card" id="card-buffer">Frame Buffer Status: --</div>
+        <div class="card" id="card-health">System Health: --</div>
+        <div class="card" id="card-cpu">CPU: --%</div>
+        <div class="card" id="card-ram">RAM: --%</div>
+        <div class="card" id="card-uptime">Uptime: --</div>
+      </div>
+    </section>
+
+    <section id="liveview" class="tab-content">
+      <div class="camera-selector" id="camera-selector"></div>
+      <div class="feeds-grid" id="feeds-grid">
+        <!-- Video feeds inserted here dynamically -->
+      </div>
+    </section>
+
+    <section id="system-settings" class="tab-content">
+      <form id="settings-form">
+        <label><input type="checkbox" id="detectionEnabled" /> Detection Enabled</label><br/>
+        <label><input type="checkbox" id="schedulerEnabled" /> Scheduler Enabled</label><br/>
+        <label>Detection Start: <input type="time" id="detectionStart" /></label><br/>
+        <label>Detection End: <input type="time" id="detectionEnd" /></label><br/>
+        <label>Sensitivity: <input type="number" step="1" id="sensitivity" /></label><br/>
+        <label>Motion Threshold: <input type="number" step="0.01" id="motionThreshold" /></label><br/>
+        <label>FPS: <input type="number" step="0.1" id="fps" /></label><br/>
+        <button type="submit">Save Settings</button>
+      </form>
+      <div id="settings-status"></div>
+    </section>
+
+    <section id="camera-settings" class="tab-content">
+      <button id="btn-add-camera">Add New Camera</button>
+      <table id="cameras-table">
+        <thead>
+          <tr>
+            <th>ID</th><th>Name</th><th>IP</th><th>Enabled</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Cameras listed here -->
+        </tbody>
+      </table>
+    </section>
+
+    <section id="logs" class="tab-content">
+      <div>
+        <label for="log-filter">Filter logs:</label>
+        <select id="log-filter">
+          <option value="uptime">Last 1 hour</option>
+          <option value="all">All logs</option>
+        </select>
+        <button id="btn-refresh-logs">Refresh</button>
+      </div>
+      <ul id="logs-list"></ul>
+    </section>
+  </main>
+
+  <footer>
+    <ul class="tabs">
+      <li data-tab="landing" class="active">Dashboard</li>
+      <li data-tab="liveview">Live View</li>
+      <li data-tab="system-settings">System Settings</li>
+      <li data-tab="camera-settings">Camera Settings</li>
+      <li data-tab="logs">Logs</li>
+    </ul>
+  </footer>
+
+  <script src="/static/js/dashboard.js"></script>
+</body>
+</html>
