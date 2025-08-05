@@ -1,0 +1,12 @@
+{
+  "log_level": "INFO",
+  "sleep_time": 1.0,
+  "frame_width": 896,
+  "frame_height": 504,
+  "sliding_window": 16,
+  "sensitivity": 5,
+  "motion_threshold": 60,
+  "detection_enabled": true,
+  "dashboard_port": 5050,
+  "dashboard_host": "0.0.0.0"
+} 

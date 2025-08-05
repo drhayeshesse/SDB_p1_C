@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "name": "Camera 1",
+    "ip": "192.168.1.100",
+    "port": 554,
+    "username": "admin",
+    "password": "your_password_here",
+    "enabled": true,
+    "frame_width": 896,
+    "frame_height": 504,
+    "target_fps": 1.0
+  },
+  {
+    "id": 2,
+    "name": "Camera 2",
+    "ip": "192.168.1.101",
+    "port": 554,
+    "username": "admin",
+    "password": "your_password_here",
+    "enabled": true,
+    "frame_width": 896,
+    "frame_height": 504,
+    "target_fps": 1.0
+  }
+] 
