@@ -2,7 +2,7 @@
 
 A real-time smoke detection system using computer vision and machine learning techniques, optimized with Numba for high performance.
 
-## 🚀 Features
+## Features
 
 - **Real-time smoke detection** using advanced computer vision algorithms
 - **Multi-camera support** with RTSP streaming
@@ -12,7 +12,7 @@ A real-time smoke detection system using computer vision and machine learning te
 - **Event recording** with video clips and snapshots
 - **Firebase notifications** for smoke detection alerts
 
-## 📊 Performance Optimizations
+## Performance Optimizations
 
 ### Numba JIT Compilation Results
 - **Patch-wise computations:** 15x faster
@@ -25,7 +25,7 @@ A real-time smoke detection system using computer vision and machine learning te
 - **After optimizations:** 120% CPU usage
 - **Memory efficiency:** Reduced by 40%
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 SDB_p1_C/
@@ -40,7 +40,7 @@ SDB_p1_C/
 └── config/               # Configuration files
 ```
 
-## 🛠️ Installation
+## Installation
 
 ### Prerequisites
 - Python 3.8+
@@ -79,7 +79,7 @@ SDB_p1_C/
    - Open browser to `http://localhost:5050`
    - View live camera feeds and metrics
 
-## 📈 Usage
+## Usage
 
 ### Starting the System
 ```bash
@@ -102,7 +102,7 @@ python main.py
 6. **Mean:** Mean-based analysis
 7. **Heatmap:** Visual detection results
 
-## 🔧 Configuration
+## Configuration
 
 ### Camera Configuration (`config/cameras.json`)
 ```json
@@ -138,7 +138,7 @@ python main.py
 }
 ```
 
-## 🧪 Testing
+## Testing
 
 ### Performance Testing
 ```bash
@@ -155,7 +155,7 @@ python smoke/performance_test.py
 python logger/cpu_monitor.py
 ```
 
-## 📝 Logging
+## Logging
 
 ### Log Levels
 - **DEBUG:** Detailed debugging information
@@ -181,7 +181,7 @@ python logger/log_viewer.py --camera 1
 python logger/log_viewer.py --type INFO
 ```
 
-## 🚨 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -221,7 +221,7 @@ python logger/log_viewer.py --type INFO
    - Check memory usage
    - Review log performance
 
-## 🤝 Contributing
+## Contributing
 
 1. **Fork the repository**
 2. **Create a feature branch:** `git checkout -b feature/new-feature`
@@ -230,11 +230,11 @@ python logger/log_viewer.py --type INFO
 5. **Push to the branch:** `git push origin feature/new-feature`
 6. **Submit a pull request**
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - OpenCV for computer vision capabilities
 - Numba for performance optimizations
