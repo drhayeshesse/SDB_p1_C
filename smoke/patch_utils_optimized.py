@@ -75,32 +75,34 @@ def _compute_min_over_time_numba(vt):
             return_array[i, j] = np.min(time_trace)
     return return_array
 
-@jit(nopython=True, parallel=True, cache=False)
+@jit(nopython=True, parallel=True, cache=True)
 def _time_derivative_numba(sf):
     """
     Numba-optimized time derivative computation.
+    Assumes sf is a 3D array: (T, H, W)
+    Returns: (T-1, H, W) array of temporal differences.
     """
-    Nt, Ny, Nx = sf.shape[0:3]
+    Nt, Ny, Nx = sf.shape[:3]  # Ensure it's a 3D array
     output_array = np.zeros((Nt - 1, Ny, Nx), dtype=np.float32)
-    
-    for t in prange(Nt - 1):
+
+    for t in prange(Nt - 1):  # Parallel over time
         for i in range(Ny):
             for j in range(Nx):
                 output_array[t, i, j] = sf[t + 1, i, j] - sf[t, i, j]
+
     return output_array
 
-@jit(nopython=True, parallel=True, cache=False)
+@jit(nopython=True,parallel=True, cache=True)
 def _time_difference_numba(sf):
-    """
-    Numba-optimized time difference computation.
-    """
-    Nt, Ny, Nx = sf.shape[0:3]
+    Nt, Ny, Nx = sf.shape
     output_array = np.zeros((Nt - 1, Ny, Nx), dtype=np.float32)
     
-    for t in prange(Nt - 1):
+    for t in range(Nt - 1):
         for i in range(Ny):
             for j in range(Nx):
-                output_array[t, i, j] = sf[t + 1, i, j] - sf[t, i, j]
+                # Ensure scalar subtraction
+                output_array[t, i, j] = float(sf[t + 1, i, j]) - float(sf[t, i, j])
+
     return output_array
 
 @jit(nopython=True, parallel=True, cache=False)
@@ -191,10 +193,17 @@ class OptimizedPatchUtils:
     
     def time_difference(self, sf: np.ndarray) -> np.ndarray:
         """
-        Compute time difference (optimized).
+        Wrapper that prepares input and calls the Numba-accelerated function.
         """
-        logger.debug("Computing time difference (optimized)")
-        return _time_difference_numba(sf)
+        logger.debug("Computing time derivative with Numba...")
+
+        # Make sure the input shape is (T, H, W)
+        if sf.ndim == 4 and sf.shape[-1] == 1:
+            sf = sf[..., 0]
+        elif sf.ndim != 3:
+            raise ValueError(f"Expected 3D array (T,H,W), got shape {sf.shape}")
+
+        return _time_derivative_numba(sf.astype(np.float32))
     
     def video_spatial_difference(self, sf: np.ndarray) -> np.ndarray:
         """

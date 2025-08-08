@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import logging
+import os
 from collections import deque
 from datetime import datetime
 
@@ -12,6 +13,18 @@ from utils.settings import load_settings
 video_path = "assets/videos/parity_test_video.avi"
 
 # Configure logging
+log_dir = "logs"
+os.makedirs(log_dir, exist_ok=True)
+log_file_path = os.path.join(log_dir, "deep_parity_test.log")
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    handlers=[
+        logging.FileHandler(log_file_path),
+        logging.StreamHandler()
+    ]
+)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("ParityTest")
 
@@ -53,12 +66,15 @@ def deep_parity_test():
         buffer.append(frame)
 
         if len(buffer) == 11:
+            gray_buffer = [cv2.cvtColor(f, cv2.COLOR_BGR2GRAY) for f in buffer]
+            gray_stack = np.stack(gray_buffer).astype(np.float32)
+
             std_result, _ = det_std.check_video_for_smoke(
-                np.array(buffer), camera_id="TEST_CAM"
-            )
+                gray_stack, camera_id="TEST_CAM"
+                )
             opt_result, _ = det_opt.check_video_for_smoke(
-                np.array(buffer), camera_id="TEST_CAM"
-            )
+                 gray_stack, camera_id="TEST_CAM"
+                )
 
             match = std_result == opt_result
             logger.info(
